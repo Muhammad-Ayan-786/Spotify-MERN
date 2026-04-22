@@ -34,7 +34,7 @@ const ArtistHomePage = () => {
           <p className="inline-flex rounded-full border border-green-400/35 bg-green-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-green-200">
             Artist Dashboard
           </p>
-          <h1 className="mt-4 bg-linear-to-r from-lime-200 via-green-300 to-emerald-200 bg-clip-text text-3xl font-black tracking-tight text-transparent sm:text-5xl">
+          <h1 className="mt-4 bg-linear-to-r from-lime-200 via-green-300 to-emerald-200 bg-clip-text text-3xl font-black tracking-tight text-transparent pb-2 sm:text-5xl">
             Welcome back, {username}
           </h1>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-300 sm:text-base">
