@@ -105,7 +105,6 @@ const UserTrackPage = () => {
           songsHeading={"Songs"}
           musicsObj={musicsObj}
           currentSong={currentSong}
-          setCurrentSong={setCurrentSong}
           playSongFunc={playSongFunc}
         />
       </div>

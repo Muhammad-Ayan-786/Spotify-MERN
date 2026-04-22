@@ -2,10 +2,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const fetchAlbumById = createAsyncThunk('ID_Album', async (params) => {
+  if (!params.albumId) {
+    throw new Error('albumId is required');
+  }
+
   try {
-    if (!params.albumId) {
-      throw new Error('albumId is required');
-    }
     const responce = await axios.get(`http://localhost:3000/api/music/albums/${params.albumId}`, {
       headers: {
         'Authorization': localStorage.getItem('token')
