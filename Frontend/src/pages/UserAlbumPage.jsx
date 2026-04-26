@@ -98,13 +98,6 @@ const UserAlbumPage = () => {
               </div>
             </div>
 
-            {/* <Songs
-              songsHeading={"Songs"}
-              musicsObj={AlbumObjByID.IdAlbumData.musics}
-              currentSong={currentSong}
-              setCurrentSong={setCurrentSong}
-              playSongFunc={playSongFunc}
-            /> */}
           </div>
       }
 
