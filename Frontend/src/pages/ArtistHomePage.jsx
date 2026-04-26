@@ -41,7 +41,7 @@ const ArtistHomePage = () => {
             This is your creative space to manage songs, upload fresh tracks, and organize your albums. Build your music brand with a clean workflow and keep everything ready for your listeners.
           </p>
 
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="mt-6 grid grid-cols-1 gap-4 min-[760px]:grid-cols-3">
             <div className="rounded-xl border border-lime-300/20 bg-lime-400/10 p-4">
               <p className="text-xs uppercase tracking-wider text-lime-100/80">Step 1</p>
               <p className="mt-1 text-lg font-semibold text-lime-100">Upload Songs</p>
