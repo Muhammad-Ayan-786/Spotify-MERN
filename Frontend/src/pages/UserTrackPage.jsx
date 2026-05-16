@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import Songs from '../components/Songs';
 import MusicPlayer from '../components/MusicPlayer';
 import { useNavigate } from 'react-router-dom';
+import { useAudioPlayer } from "../hooks/useAudioPlayer";
 
 const UserTrackPage = () => {
 
@@ -16,40 +17,42 @@ const UserTrackPage = () => {
   const musicsObj = useSelector((state) => state.music)
   const albumsObj = useSelector((state) => state.album)
 
-  const [currentSong, setCurrentSong] = useState(null)
-  const audioRef = useRef(new Audio())
-  const [isLoop, setIsLoop] = useState(false)
-
-  const playSongFunc = (uri, idx, onloop = false) => {
-    const audio = audioRef.current
-
-    if (uri) {
-      setCurrentSong(idx)
-      setIsLoop(onloop)
-      audio.src = uri
-      audio.loop = onloop
-      audio.play()
-    }
-    else {
-      setCurrentSong(null)
-      setIsLoop(false)
-      audio.loop = false
-      audio.pause()
-    }
-  }
-
   useEffect(() => {
     dispatch(fetchMusic())
     dispatch(fetchAlbum())
   }, [])
 
-  useEffect(() => {
-    return () => {
-      audioRef.current.pause()
-      audioRef.current.loop = false
-      setIsLoop(false)
-    }
-  }, [])
+  // const [currentSong, setCurrentSong] = useState(null)
+  // const audioRef = useRef(new Audio())
+  // const [isLoop, setIsLoop] = useState(false)
+
+  // const playSongFunc = (uri, idx, onloop = false) => {
+  //   const audio = audioRef.current
+
+  //   if (uri) {
+  //     setCurrentSong(idx)
+  //     setIsLoop(onloop)
+  //     audio.src = uri
+  //     audio.loop = onloop
+  //     audio.play()
+  //   }
+  //   else {
+  //     setCurrentSong(null)
+  //     setIsLoop(false)
+  //     audio.loop = false
+  //     audio.pause()
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   return () => {
+  //     audioRef.current.pause()
+  //     audioRef.current.loop = false
+  //     setIsLoop(false)
+  //   }
+  // }, [])
+
+  const { playTheSong, currentSong, isLoop, setIsLoop } = useAudioPlayer()
 
   return (
     <section className="scrollbar-adaptive flex lg:h-full lg:min-h-0 flex-col gap-4 pb-2 sm:gap-6">
@@ -115,12 +118,11 @@ const UserTrackPage = () => {
                 :
                 (musicsObj.data && musicsObj.data.length > 0
                   ? musicsObj.data.map((song, idx) => (
-                    <Songs
-                      key={idx}
+                    <Songs key={idx}
                       idx={idx}
                       song={song}
                       currentSong={currentSong}
-                      playSongFunc={playSongFunc}
+                      playTheSong={playTheSong}
                     />
                   ))
                   :
@@ -140,9 +142,9 @@ const UserTrackPage = () => {
       <MusicPlayer
         isLoop={isLoop}
         setIsLoop={setIsLoop}
-        musicsObj={musicsObj}
+        track={musicsObj.data}
         currentSong={currentSong}
-        playSongFunc={playSongFunc}
+        playTheSong={playTheSong}
       />
 
     </section>

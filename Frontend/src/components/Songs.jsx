@@ -1,6 +1,9 @@
 import { Infinity, Pause, Play } from "lucide-react"
 
-const Songs = ({ idx, song, currentSong, playSongFunc }) => {
+const Songs = (props) => {
+
+  const { idx, song, currentSong, playTheSong } = props
+
   return (
     <div
       className="song group flex items-start gap-1 cursor-pointer justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition hover:border-green-400/25 hover:bg-green-500/10 
@@ -13,7 +16,7 @@ const Songs = ({ idx, song, currentSong, playSongFunc }) => {
         border: '2px solid #bbf7d0'
       } : {}}
       onDoubleClick={() => {
-        playSongFunc(song.uri, idx)
+        playTheSong(song.uri, idx)
       }}
     >
       <div className="min-w-0 flex-1">
@@ -36,7 +39,7 @@ const Songs = ({ idx, song, currentSong, playSongFunc }) => {
               className="rounded-full bg-lime-500/90 p-2.5 text-zinc-900 shadow-lg shadow-lime-500/25 transition group-hover:bg-lime-400"
               aria-label="Play"
               onClick={() => {
-                playSongFunc(null, null)
+                playTheSong(null, null)
               }}
             >
               <Pause size={18} className="fill-current" />
@@ -47,7 +50,7 @@ const Songs = ({ idx, song, currentSong, playSongFunc }) => {
               className="rounded-full bg-lime-500/90 p-2.5 text-zinc-900 shadow-lg shadow-lime-500/25 transition group-hover:bg-lime-400"
               aria-label="Play"
               onClick={() => {
-                playSongFunc(song.uri, idx)
+                playTheSong(song.uri, idx)
               }}
             >
               <Play size={18} className="fill-current" />

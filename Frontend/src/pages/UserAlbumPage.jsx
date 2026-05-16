@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Navigate, useParams, Link } from "react-router-dom"
 import { fetchAlbumById } from "../store/features/albumByIdAPI";
 import { useDispatch, useSelector } from "react-redux";
 import { ArrowLeft, Music2, Infinity } from "lucide-react";
 import Songs from "../components/Songs";
+import MusicPlayer from "../components/MusicPlayer";
 
 const UserAlbumPage = () => {
 
@@ -15,14 +16,44 @@ const UserAlbumPage = () => {
 
   const AlbumObjByID = useSelector((state) => state.albumById)
 
+  const [currentSong, setCurrentSong] = useState(null)
+  const audioRef = useRef(new Audio())
+  const [isLoop, setIsLoop] = useState(false)
+
+  const playTheSong = (uri, idx, onloop = false) => {
+    const audio = audioRef.current
+
+    if (uri) {
+      setCurrentSong(idx)
+      setIsLoop(onloop)
+      audio.src = uri
+      audio.loop = onloop
+      audio.play()
+    }
+    else {
+      setCurrentSong(null)
+      setIsLoop(false)
+      audio.loop = false
+      audio.pause()
+    }
+  }
+
   useEffect(() => {
     if (!invalid) {
       dispatch(fetchAlbumById(params))
     }
   }, [])
 
+  useEffect(() => {
+    return () => {
+      audioRef.current.pause()
+      audioRef.current.loop = false
+      setIsLoop(false)
+    }
+  }, [])
+
   return (
-    <section className='mx-auto flex w-full max-w-7xl flex-col gap-6 text-white'>
+    <section className="scrollbar-adaptive flex lg:h-full lg:min-h-0 flex-col gap-4 pb-2 sm:gap-6 text-white">
 
       {invalid
         ?
@@ -78,8 +109,10 @@ const UserAlbumPage = () => {
           </div>
           :
           // If Album is loaded
-          <div>
-            <div className='relative overflow-hidden rounded-3xl border border-white/10 bg-linear-to-br from-emerald-500/20 via-zinc-900/70 to-black/90 p-6 shadow-[0_30px_80px_-40px_rgba(16,185,129,0.85)] sm:p-8'>
+          <div className="flex min-h-0 flex-1 flex-col gap-4">
+
+            {/* Header */}
+            <div className='relative shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-linear-to-br from-emerald-500/20 via-zinc-900/70 to-black/90 p-6 shadow-[0_30px_80px_-40px_rgba(16,185,129,0.85)] sm:p-8'>
               <div className='pointer-events-none absolute -top-16 -right-16 h-56 w-56 rounded-full bg-emerald-300/20 blur-3xl' />
               <div className='pointer-events-none absolute -bottom-20 -left-12 h-56 w-56 rounded-full bg-lime-300/15 blur-3xl' />
 
@@ -93,10 +126,57 @@ const UserAlbumPage = () => {
 
               <div className='mt-6 flex flex-wrap items-center gap-3'>
                 <span className='rounded-xl border border-emerald-200/30 bg-emerald-400/20 px-4 py-2 text-sm font-semibold uppercase tracking-wide transition-all hover:bg-emerald-400/30'>
-                  {AlbumObjByID.IdAlbumData.artist?.username} • Songs:  {AlbumObjByID.IdAlbumData.musics?.length}
+                  {AlbumObjByID.IdAlbumData.artist?.username} • Songs: {AlbumObjByID.IdAlbumData.musics?.length}
                 </span>
               </div>
             </div>
+
+
+            {/* Main — songs */}
+            <div className="flex flex-col gap-3 min-h-0 overflow-hidden rounded-2xl border border-white/10 bg-white/4 p-4 backdrop-blur-sm sm:p-5 sm:gap-4">
+              <div className="w-full flex min-h-72 flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/4 p-3 backdrop-blur-sm sm:min-h-80 sm:p-4 md:min-h-88" >
+                <h2 className="mb-3 shrink-0 text-sm font-semibold uppercase tracking-wider text-zinc-400">
+                  Songs
+                </h2>
+
+                <div className="songs flex min-h-0 max-h-60 flex-1 pr-1 flex-col gap-2 overflow-y-auto overscroll-contain scrollbar-hide">
+                  {
+                    AlbumObjByID.isLoading
+                      ?
+                      <div className="flex min-h-40 flex-1 items-center justify-center py-12">
+                        <Infinity size={20} className="h-9 w-9 cursor-pointer animate-spin rounded-full bg-lime-500/20 p-2 text-lime-300" />
+                      </div>
+                      :
+                      (AlbumObjByID.IdAlbumData.musics && AlbumObjByID.IdAlbumData.musics?.length > 0
+                        ? AlbumObjByID.IdAlbumData.musics.map((song, idx) => (
+                          <Songs
+                            key={idx}
+                            idx={idx}
+                            song={song}
+                            currentSong={currentSong}
+                            playTheSong={playTheSong}
+                          />
+                        ))
+                        :
+                        (
+                          <p className="py-12 text-center text-sm text-zinc-500">
+                            No music found yet. Add songs to see them here.
+                          </p>
+                        )
+                      )
+                  }
+                </div>
+              </div>
+            </div>
+
+            {/* Music Player (same placement pattern as Track page) */}
+            <MusicPlayer
+              isLoop={isLoop}
+              setIsLoop={setIsLoop}
+              track={AlbumObjByID.IdAlbumData.musics}
+              currentSong={currentSong}
+              playTheSong={playTheSong}
+            />
 
           </div>
       }
